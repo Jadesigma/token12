@@ -5,6 +5,23 @@ from dotenv import load_dotenv
 import asyncio
 from datetime import datetime
 
+# ✅ keep alive สำหรับ Render (port 8080)
+from flask import Flask
+from threading import Thread
+
+app = Flask("")
+
+@app.route("/")
+def home():
+    return "✅ Bot is running!"
+
+def run():
+    app.run(host="0.0.0.0", port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
 # ✅ โหลด .env
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
@@ -44,8 +61,8 @@ class RoleButtonView(discord.ui.View):
 @commands.has_permissions(administrator=True)
 async def post_embed(ctx):
     embed = discord.Embed(
-        title="🪄 รับยศ 𝘃𝗲𝗿𝗶𝗳𝘆",
-        description="กดปุ่มข้างล่างเพื่อรับยศ **𝘃𝗲𝗿𝗶𝗳𝘆** ได้เลย!",
+        title="🪄 รับยศ Elite Member",
+        description="กดปุ่มข้างล่างเพื่อรับยศ **Elite Member** ได้เลย!",
         color=discord.Color.blue()
     )
     embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/1161030439857131550.gif?size=96&quality=lossless")
@@ -161,4 +178,6 @@ async def ticket_panel_error(ctx, error):
 async def on_ready():
     print(f"✅ Bot online as {bot.user}")
 
+# ✅ เรียกใช้ keep_alive() + bot.run()
+keep_alive()
 bot.run(TOKEN)
